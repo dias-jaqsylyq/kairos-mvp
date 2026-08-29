@@ -76,11 +76,27 @@ export function scoreOpportunity(p: Profile, o: Opportunity): Scored {
 
 export function parseDeadlineDate(deadline: string | null): Date | null {
   if (!deadline) return null;
-  const m = deadline.match(/([A-Z][a-z]{2})\s+(\d{1,2}),?\s+(\d{4})/g);
-  const last = m?.[m.length - 1];
-  if (!last) return null;
-  const d = new Date(last);
-  return isNaN(+d) ? null : d;
+
+  // Range where both ends carry a month, e.g. "Sep 01 - Oct 15, 2026" — the
+  // last full match is the end date, which is what we want.
+  const full = deadline.match(/([A-Z][a-z]{2})\s+(\d{1,2}),?\s+(\d{4})/g);
+  if (full) {
+    const d = new Date(full[full.length - 1]);
+    if (!isNaN(+d)) return d;
+  }
+
+  // Same-month range where the second end omits the month, e.g.
+  // "Aug 04 - 31, 2026" — borrow the month from the first end.
+  const sameMonth = deadline.match(
+    /([A-Z][a-z]{2})\s+\d{1,2}\s*-\s*(\d{1,2}),?\s+(\d{4})/
+  );
+  if (sameMonth) {
+    const [, month, day, year] = sameMonth;
+    const d = new Date(`${month} ${day}, ${year}`);
+    if (!isNaN(+d)) return d;
+  }
+
+  return null;
 }
 
 function daysUntil(deadline: string | null): number | null {

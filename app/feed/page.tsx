@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type FeedItem = {
   id: string;
@@ -81,35 +82,37 @@ export default function FeedPage() {
       {items.map((item, index) => (
         <div
           key={item.id}
-          className="flex gap-4 rounded border border-white/10 p-4"
+          className="flex flex-col gap-3 rounded border border-white/10 p-4"
         >
-          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-white text-xl font-bold text-black">
-            {item.score}
-          </div>
-          <div className="flex flex-1 flex-col gap-1">
-            <h2 className="font-semibold">{item.title}</h2>
-            <p className="text-sm text-zinc-400">{item.organizer}</p>
-            {item.deadline && (
-              <span className="w-fit rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">
-                {item.deadline}
-              </span>
-            )}
-            <p className="text-sm text-zinc-300">{item.reason}</p>
-            <div className="mt-2 flex gap-2">
-              <button
-                onClick={() => handleSave(item, index + 1)}
-                disabled={savedIds.has(item.id)}
-                className="rounded border border-white/20 px-3 py-1 text-sm disabled:opacity-50"
-              >
-                {savedIds.has(item.id) ? "Saved ✓" : "💾 Save"}
-              </button>
-              <button
-                onClick={() => handleDismiss(item, index + 1)}
-                className="rounded border border-white/20 px-3 py-1 text-sm"
-              >
-                ✕ Dismiss
-              </button>
+          <Link href={`/o/${item.id}`} className="flex gap-4">
+            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-white text-xl font-bold text-black">
+              {item.score}
             </div>
+            <div className="flex flex-1 flex-col gap-1">
+              <h2 className="font-semibold">{item.title}</h2>
+              <p className="text-sm text-zinc-400">{item.organizer}</p>
+              {item.deadline && (
+                <span className="w-fit rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">
+                  {item.deadline}
+                </span>
+              )}
+              <p className="text-sm text-zinc-300">{item.reason}</p>
+            </div>
+          </Link>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleSave(item, index + 1)}
+              disabled={savedIds.has(item.id)}
+              className="rounded border border-white/20 px-3 py-1 text-sm disabled:opacity-50"
+            >
+              {savedIds.has(item.id) ? "Saved ✓" : "💾 Save"}
+            </button>
+            <button
+              onClick={() => handleDismiss(item, index + 1)}
+              className="rounded border border-white/20 px-3 py-1 text-sm"
+            >
+              ✕ Dismiss
+            </button>
           </div>
         </div>
       ))}
