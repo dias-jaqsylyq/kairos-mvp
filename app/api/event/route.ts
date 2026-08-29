@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 type EventAction = "view" | "save" | "dismiss" | "apply_click";
 const VALID_ACTIONS: EventAction[] = ["view", "save", "dismiss", "apply_click"];
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid event" }, { status: 400 });
   }
 
-  db.prepare(
+  getDb().prepare(
     `INSERT INTO events (user_id, opportunity_id, action, score, position)
      VALUES (?, ?, ?, ?, ?)`
   ).run(

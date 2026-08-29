@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { getOpportunities } from "@/lib/opportunities";
 import { scoreOpportunity, type Profile } from "@/lib/score";
 
@@ -19,6 +19,8 @@ const split = (s: string) =>
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("user_id");
   if (!userId) return NextResponse.json({ error: "no user_id" }, { status: 400 });
+
+  const db = getDb();
 
   const row = db
     .prepare("SELECT * FROM profiles WHERE user_id = ?")
