@@ -74,13 +74,18 @@ export function scoreOpportunity(p: Profile, o: Opportunity): Scored {
   return { score, reason };
 }
 
-function daysUntil(deadline: string | null): number | null {
+export function parseDeadlineDate(deadline: string | null): Date | null {
   if (!deadline) return null;
   const m = deadline.match(/([A-Z][a-z]{2})\s+(\d{1,2}),?\s+(\d{4})/g);
   const last = m?.[m.length - 1];
   if (!last) return null;
   const d = new Date(last);
-  if (isNaN(+d)) return null;
+  return isNaN(+d) ? null : d;
+}
+
+function daysUntil(deadline: string | null): number | null {
+  const d = parseDeadlineDate(deadline);
+  if (!d) return null;
   return Math.ceil((+d - Date.now()) / 86_400_000);
 }
 
