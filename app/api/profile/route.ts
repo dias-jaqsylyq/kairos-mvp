@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 type ProfileRow = {
   user_id: string;
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("user_id");
   if (!userId) return NextResponse.json({ error: "no user_id" }, { status: 400 });
 
-  const row = db
+  const row = getDb()
     .prepare("SELECT * FROM profiles WHERE user_id = ?")
     .get(userId) as ProfileRow | undefined;
 
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   const userId = body.user_id;
   if (!userId) return NextResponse.json({ error: "no user_id" }, { status: 400 });
 
-  db.prepare(
+  getDb().prepare(
     `INSERT INTO profiles (user_id, skills, interests, location, remote_pref, education)
      VALUES (@user_id, @skills, @interests, @location, @remote_pref, @education)
      ON CONFLICT(user_id) DO UPDATE SET
