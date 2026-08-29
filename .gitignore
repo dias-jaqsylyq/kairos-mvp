@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local sqlite db (DB_PATH points elsewhere in production)
+*.db
+*.db-wal
+*.db-shm
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
